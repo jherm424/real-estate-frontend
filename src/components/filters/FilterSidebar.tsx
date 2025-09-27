@@ -23,7 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { listingsApi } from '../../services/api';
 import { SearchFilters } from '../../types';
 
@@ -38,13 +38,11 @@ export default function FilterSidebar({ filters, onFilterChange }: FilterSidebar
 
   const { isOpen: isAdvancedOpen, onToggle: onAdvancedToggle } = useDisclosure();
 
-  const { data: filterOptions } = useQuery(
-    'filterOptions',
-    listingsApi.getFilterOptions,
-    {
-      staleTime: 10 * 60 * 1000, // 10 minutes
-    }
-  );
+  const { data: filterOptions } = useQuery({
+    queryKey: ['filterOptions'],
+    queryFn: listingsApi.getFilterOptions,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   useEffect(() => {
     setLocalFilters(filters);

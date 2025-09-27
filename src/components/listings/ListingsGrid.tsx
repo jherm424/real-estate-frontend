@@ -14,7 +14,7 @@ import {
   Flex,
   Badge,
 } from '@chakra-ui/react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { listingsApi } from '../../services/api';
 import { Listing, SearchFilters } from '../../types';
 import ListingCard from './ListingCard';
@@ -36,14 +36,11 @@ export default function ListingsGrid({
     isLoading,
     error,
     isError,
-  } = useQuery(
-    ['listings', filters],
-    () => listingsApi.getListings(filters),
-    {
-      keepPreviousData: true,
-      staleTime: 2 * 60 * 1000, // 2 minutes
-    }
-  );
+  } = useQuery({
+    queryKey: ['listings', filters],
+    queryFn: () => listingsApi.getListings(filters),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const [sortBy, sortOrder] = e.target.value.split('_');
